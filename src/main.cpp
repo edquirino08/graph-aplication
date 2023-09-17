@@ -1,9 +1,8 @@
 #include <iostream>
 
 int main() {
-    // Seu código aqui
 
-    std::cout << "Hello, World!" << std::endl; // Exemplo de saída
+      std::cout << "Hello, World!" << std::endl;
 
     return 0;
 }
