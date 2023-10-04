@@ -34,8 +34,45 @@ bool insertAresta(int idNoOrigem, int idNoDestino, int pesoAresta, bool weigthAr
 bool removeAresta(int idNoOrigem, int idNoDestino, bool isDirected);
 
 //--- Caracteristica do Grafo ---
-int getNumAresta();
-No *getNoRaiz();
-int getOrdem();
-int getGrauEntrada();
-int getGrauSaida();
+int Grafo::getNumAresta()
+{
+    return this->numAresta;
+}
+No *Grafo::getNoRaiz()
+{
+    return this->noRaiz;
+}
+int Grafo::getOrdem()
+{
+    return this->ordem;
+}
+int Grafo::getGrauEntrada()
+{
+    int inputDegree = 0;
+
+    No *noAux = noRaiz;
+    while (noAux != NULL)
+    {
+        if (noAux->getGrauEntrada() > inputDegree)
+        {
+            inputDegree = noAux->getGrauEntrada();
+        }
+        noAux = noAux->getProxNo();
+    }
+    return inputDegree;
+}
+int Grafo::getGrauSaida()
+{
+    int outputDegree = 0;
+
+    No *noAux = noRaiz;
+    while (noAux != NULL)
+    {
+        if (noAux->getGrauSaida() > outputDegree)
+        {
+            outputDegree = noAux->getGrauSaida();
+        }
+        noAux = noAux->getProxNo();
+    }
+    return outputDegree;
+}
