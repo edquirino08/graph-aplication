@@ -1,4 +1,4 @@
-#include "Grafo.h"
+#include "../include/Grafo.h"
 
 using namespace std;
 
@@ -25,13 +25,108 @@ void Grafo::decOrdem()
 }
 
 //--- Funcoes do No ---
-bool procurarNoPeloId(int idFindNo);
-No *insereNo(int idNo, int pesoNo);
-bool removeNo(int idNo, bool isDigrafo);
+bool Grafo::procurarNoPeloId(int idFindNo)
+{
+    No *noAux = this->noRaiz;
+
+    while (noAux != NULL)
+    {
+        if (noAux->getIdNo() == idFindNo)
+        {
+            return true;
+        }
+
+        if (noAux->getIdNo() == NULL)
+        {
+            return false;
+        }
+
+        noAux = noAux->getProxNo();
+    }
+    return false;
+}
+
+No *Grafo::getNoById(int idNo)
+{
+
+    No *noAux = this->noRaiz;
+    while (noAux != nullptr)
+    {
+
+        if (noAux->getIdNo() == idNo)
+        {
+            return noAux;
+        }
+
+        noAux = noAux->getProxNo();
+    }
+    return nullptr;
+}
+
+No *Grafo::insereNo(int idNo)
+{
+    if (procurarNoPeloId(idNo))
+    {
+        return NULL;
+    }
+
+    No *newNo = new No(idNo);
+
+    if (noRaiz == NULL)
+    {
+        noRaiz = newNo;
+    }
+    else
+    {
+        newNo->setProxNo(noRaiz);
+        noRaiz = newNo;
+    }
+
+    this->incOrdem();
+    return newNo;
+}
+
+bool Grafo::removeNo(int idNo, bool isDigrafo)
+{
+}
 
 //--- Funcoes de Aresta ---
-bool insertAresta(int idNoOrigem, int idNoDestino, int pesoAresta, bool weigthArc, bool isDirected);
-bool removeAresta(int idNoOrigem, int idNoDestino, bool isDirected);
+bool Grafo::insertAresta(int idNoOrigem, int idNoDestino, int pesoAresta, bool weigthArc, bool isDirected)
+{
+    No *noOrigem = this->getNoById(idNoOrigem);
+    No *noDestino = this->getNoById(idNoDestino);
+
+    if (noOrigem == nullptr)
+    {
+        this->insereNo(idNoOrigem);
+        noOrigem = this->getNoById(idNoOrigem);
+    }
+
+    if (noDestino == nullptr)
+    {
+        this->insereNo(idNoDestino);
+        noDestino = this->getNoById(idNoDestino);
+    }
+
+    if (isDirected)
+    {
+    }
+    else
+    {
+        if (noOrigem->getPrimeiraAresta() == nullptr)
+        {
+            Aresta *aresta = new Aresta(idNoDestino, pesoAresta);
+            noOrigem->setPrimeiraAresta(aresta);
+            noOrigem->setUltimaAresta(aresta);
+        }
+        else
+        {
+        }
+    }
+}
+bool Grafo::removeAresta(int idNoOrigem, int idNoDestino, bool isDirected)
+{
+}
 
 //--- Caracteristica do Grafo ---
 int Grafo::getNumAresta()

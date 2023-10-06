@@ -11,9 +11,9 @@ using namespace std;
 class No;
 class Aresta;
 
-class Grafo {
+class Grafo
+{
 public:
-
     //--- Construtor e Destrutor ---
     Grafo(bool isDigrafo);
     virtual ~Grafo();
@@ -24,13 +24,13 @@ public:
 
     //--- Funcoes do No ---
     bool procurarNoPeloId(int idFindNo);
-    No *insereNo(int idNo, int pesoNo);
+    No *insereNo(int idNo);
     bool removeNo(int idNo, bool isDigrafo);
+    No *getNoById(int idNo);
 
     //--- Funcoes de Aresta ---
     bool insertAresta(int idNoOrigem, int idNoDestino, int pesoAresta, bool weigthArc, bool isDirected);
     bool removeAresta(int idNoOrigem, int idNoDestino, bool isDirected);
-    
 
     //--- Caracteristica do Grafo ---
     int getNumAresta();
@@ -38,11 +38,8 @@ public:
     int getOrdem();
     int getGrauEntrada();
     int getGrauSaida();
-    
-
 
 private:
-
     int ordem;
     int numAresta;
     bool digrafo;
@@ -50,8 +47,6 @@ private:
     bool weightArc;
 
     No *noRaiz;
-
 };
-
 
 #endif // GRAPH_H
