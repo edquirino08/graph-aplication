@@ -15,7 +15,9 @@ class Grafo
 {
 public:
     //--- Construtor e Destrutor ---
+    Grafo();
     Grafo(bool isDigrafo);
+    Grafo(bool isDigrafo,bool weightArc);
     virtual ~Grafo();
 
     //--- Seters ---
@@ -29,7 +31,7 @@ public:
     No *getNoById(int idNo);
 
     //--- Funcoes de Aresta ---
-    bool insertAresta(int idNoOrigem, int idNoDestino, int pesoAresta, bool weigthArc, bool isDirected);
+    bool insertAresta(int idNoOrigem, int idNoDestino, int pesoAresta, bool isDirected);
     bool removeAresta(int idNoOrigem, int idNoDestino, bool isDirected);
 
     //--- Caracteristica do Grafo ---
@@ -38,6 +40,8 @@ public:
     int getOrdem();
     int getGrauEntrada();
     int getGrauSaida();
+    void printGrafo();
+    bool isDigrafo();
 
 private:
     int ordem;

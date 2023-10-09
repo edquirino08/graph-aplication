@@ -2,16 +2,50 @@
 
 using namespace std;
 
+Grafo::Grafo()
+{
+    this->ordem = 0;
+    this->noRaiz = nullptr;
+    this->digrafo = 0;
+    this->weigthNo = 0;
+    this->weightArc = 0;
+}
+
+
 Grafo::Grafo(bool isDigrafo)
 {
     this->ordem = 0;
-    this->noRaiz = NULL;
+    this->noRaiz = nullptr;
     this->digrafo = isDigrafo;
     this->weigthNo = 0;
     this->weightArc = 0;
 }
+
+Grafo::Grafo(bool isDigrafo,bool weightArc)
+{
+    this->ordem = 0;
+    this->noRaiz = nullptr;
+    this->digrafo = isDigrafo;
+    this->weigthNo = 0;
+    this->weightArc = weightArc;
+}
+
 Grafo::~Grafo()
 {
+    No *currentNode = noRaiz;
+    while (currentNode != nullptr)
+    {
+        Aresta *currentEdge = currentNode->getPrimeiraAresta();
+        while (currentEdge != nullptr)
+        {
+            Aresta *tempEdge = currentEdge;
+            currentEdge = currentEdge->getProxAresta();
+            delete tempEdge;
+        }
+        No *tempNode = currentNode;
+        currentNode = currentNode->getProxNo();
+        delete tempNode;
+    }
 }
 
 //--- Seters ---
@@ -29,14 +63,14 @@ bool Grafo::procurarNoPeloId(int idFindNo)
 {
     No *noAux = this->noRaiz;
 
-    while (noAux != NULL)
+    while (noAux != nullptr)
     {
         if (noAux->getIdNo() == idFindNo)
         {
             return true;
         }
 
-        if (noAux->getIdNo() == NULL)
+        if (noAux->getIdNo() == 0)
         {
             return false;
         }
@@ -67,12 +101,12 @@ No *Grafo::insereNo(int idNo)
 {
     if (procurarNoPeloId(idNo))
     {
-        return NULL;
+        return nullptr;
     }
 
     No *newNo = new No(idNo);
 
-    if (noRaiz == NULL)
+    if (noRaiz == nullptr)
     {
         noRaiz = newNo;
     }
@@ -88,13 +122,55 @@ No *Grafo::insereNo(int idNo)
 
 bool Grafo::removeNo(int idNo, bool isDigrafo)
 {
+    No *noToRemove = getNoById(idNo);
+
+    if (noToRemove == nullptr)
+    {
+        return false;
+    }
+
+    Aresta *currentEdge = noToRemove->getPrimeiraAresta();
+    while (currentEdge != nullptr)
+    {
+        Aresta *tempEdge = currentEdge;
+        currentEdge = currentEdge->getProxAresta();
+        removeAresta(idNo, tempEdge->getIdNoDestino(), isDigrafo);
+    }
+
+    No *currentNode = noRaiz;
+    No *previousNode = nullptr;
+
+    while (currentNode != nullptr)
+    {
+        if (currentNode == noToRemove)
+        {
+            if (previousNode == nullptr)
+            {
+                noRaiz = currentNode->getProxNo();
+            }
+            else
+            {
+                previousNode->setProxNo(currentNode->getProxNo());
+            }
+
+            delete currentNode;
+            this->decOrdem();
+            return true;
+        }
+
+        previousNode = currentNode;
+        currentNode = currentNode->getProxNo();
+    }
+
+    return false;
 }
 
+
 //--- Funcoes de Aresta ---
-bool Grafo::insertAresta(int idNoOrigem, int idNoDestino, int pesoAresta, bool weigthArc, bool isDirected)
+bool Grafo::insertAresta(int idNoOrigem, int idNoDestino, int pesoAresta, bool isDirected)
 {
-    No *noOrigem = this->getNoById(idNoOrigem);
-    No *noDestino = this->getNoById(idNoDestino);
+    No *noOrigem = getNoById(idNoOrigem);
+    No *noDestino = getNoById(idNoDestino);
 
     if (noOrigem == nullptr)
     {
@@ -108,24 +184,114 @@ bool Grafo::insertAresta(int idNoOrigem, int idNoDestino, int pesoAresta, bool w
         noDestino = this->getNoById(idNoDestino);
     }
 
-    if (isDirected)
+    Aresta *novaAresta = new Aresta(idNoDestino, pesoAresta);
+
+    if (noOrigem->getPrimeiraAresta() == nullptr)
     {
+        noOrigem->setPrimeiraAresta(novaAresta);
+        noOrigem->setUltimaAresta(novaAresta);
     }
     else
     {
-        if (noOrigem->getPrimeiraAresta() == nullptr)
+        noOrigem->getUltimaAresta()->setProxAresta(novaAresta);
+        noOrigem->setUltimaAresta(novaAresta);
+    }
+
+    if (!isDirected)
+    {
+        Aresta *novaArestaInversa = new Aresta(idNoOrigem, pesoAresta);
+
+        if (noDestino->getPrimeiraAresta() == nullptr)
         {
-            Aresta *aresta = new Aresta(idNoDestino, pesoAresta);
-            noOrigem->setPrimeiraAresta(aresta);
-            noOrigem->setUltimaAresta(aresta);
+            noDestino->setPrimeiraAresta(novaArestaInversa);
+            noDestino->setUltimaAresta(novaArestaInversa);
         }
         else
         {
+            noDestino->getUltimaAresta()->setProxAresta(novaArestaInversa);
+            noDestino->setUltimaAresta(novaArestaInversa);
         }
     }
+    else
+    {
+        noOrigem->setGrauSaida(noOrigem->getGrauSaida() + 1);
+        noDestino->setGrauEntrada(noDestino->getGrauEntrada() + 1);
+    }
+
+    this->numAresta++;
+
+    return true;
 }
+
 bool Grafo::removeAresta(int idNoOrigem, int idNoDestino, bool isDirected)
 {
+    No *noOrigem = getNoById(idNoOrigem);
+    No *noDestino = getNoById(idNoDestino);
+
+    if (noOrigem == nullptr)
+    {
+        return false;
+    }
+
+    Aresta *aresta = noOrigem->getPrimeiraAresta();
+    Aresta *arestaAnterior = nullptr;
+
+    while (aresta != nullptr)
+    {
+        if (aresta->getIdNoDestino() == idNoDestino)
+        {
+            if (arestaAnterior == nullptr)
+            {
+                noOrigem->setPrimeiraAresta(aresta->getProxAresta());
+            }
+            else
+            {
+                arestaAnterior->setProxAresta(aresta->getProxAresta());
+            }
+
+            delete aresta;
+
+            if (isDirected)
+            {
+                noOrigem->setGrauSaida(noOrigem->getGrauSaida() - 1);
+                noDestino->setGrauEntrada(noDestino->getGrauEntrada() - 1);
+            }
+            else
+            {
+                Aresta *arestaOposta = noDestino->getPrimeiraAresta();
+                Aresta *arestaOpostaAnterior = nullptr;
+
+                while (arestaOposta != nullptr)
+                {
+                    if (arestaOposta->getIdNoDestino() == idNoOrigem)
+                    {
+                        if (arestaOpostaAnterior == nullptr)
+                        {
+                            noDestino->setPrimeiraAresta(arestaOposta->getProxAresta());
+                        }
+                        else
+                        {
+                            arestaOpostaAnterior->setProxAresta(arestaOposta->getProxAresta());
+                        }
+
+                        delete arestaOposta;
+                        break;
+                    }
+
+                    arestaOpostaAnterior = arestaOposta;
+                    arestaOposta = arestaOposta->getProxAresta();
+                }
+            }
+
+            this->numAresta--;
+            return true;
+        }
+
+        arestaAnterior = aresta;
+        aresta = aresta->getProxAresta();
+    }
+
+    return false;
 }
 
 //--- Caracteristica do Grafo ---
@@ -146,7 +312,7 @@ int Grafo::getGrauEntrada()
     int inputDegree = 0;
 
     No *noAux = noRaiz;
-    while (noAux != NULL)
+    while (noAux != nullptr)
     {
         if (noAux->getGrauEntrada() > inputDegree)
         {
@@ -161,7 +327,7 @@ int Grafo::getGrauSaida()
     int outputDegree = 0;
 
     No *noAux = noRaiz;
-    while (noAux != NULL)
+    while (noAux != nullptr)
     {
         if (noAux->getGrauSaida() > outputDegree)
         {
@@ -170,4 +336,39 @@ int Grafo::getGrauSaida()
         noAux = noAux->getProxNo();
     }
     return outputDegree;
+}
+
+void Grafo::printGrafo()
+{
+    cout << "Ordem do Grafo: " << ordem << endl;
+    cout << "Numero de Arestas: " << this->numAresta << endl;
+    cout << "Tipo do Grafo: " << (digrafo ? "Direcionado" : "Nao Direcionado") << endl;
+    cout << "Peso nos nos: " << (weigthNo ? "Sim" : "Nao") << endl;
+    cout << "Peso nas arestas: " << (weightArc ? "Sim" : "Nao") << endl;
+
+    cout << "\nNos do Grafo:" << endl;
+    No *currentNode = noRaiz;
+    while (currentNode != nullptr)
+    {
+        cout << "  ID do no: " << currentNode->getIdNo() << endl;
+        cout << "  Peso do no: " << currentNode->getPesoNo() << endl;
+        cout << "  Grau de entrada: " << currentNode->getGrauEntrada() << endl;
+        cout << "  Grau de saida: " << currentNode->getGrauSaida() << endl;
+
+        Aresta *currentEdge = currentNode->getPrimeiraAresta();
+        cout << "  Arestas deste no:" << endl;
+        while (currentEdge != nullptr)
+        {
+            cout << "    Destino: " << currentEdge->getIdNoDestino() << endl;
+            cout << "    Peso da aresta: " << currentEdge->getPesoAresta() << endl;
+            currentEdge = currentEdge->getProxAresta();
+        }
+
+        currentNode = currentNode->getProxNo();
+        cout << endl;
+    }
+}
+
+bool Grafo::isDigrafo(){
+    return this->digrafo;
 }

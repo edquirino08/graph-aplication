@@ -11,7 +11,9 @@ Aresta::Aresta(int noDestino, int pesoAresta)
 {
     this->idNoDestino = noDestino;
     this->pesoAresta = pesoAresta;
+    this->proxAresta = nullptr;
 }
+
 
 int Aresta::getPesoAresta()
 {
