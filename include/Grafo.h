@@ -17,7 +17,8 @@ public:
     //--- Construtor e Destrutor ---
     Grafo();
     Grafo(bool isDigrafo);
-    Grafo(bool isDigrafo,bool weightArc);
+    Grafo(bool isDigrafo, bool weightArc);
+    Grafo(int order, bool directed, bool weightedEdge, bool weightedNode);
     virtual ~Grafo();
 
     //--- Seters ---
@@ -42,6 +43,8 @@ public:
     int getGrauSaida();
     void printGrafo();
     bool isDigrafo();
+    bool getWeightedEdge();
+    bool getWeightedNode();
 
 private:
     int ordem;

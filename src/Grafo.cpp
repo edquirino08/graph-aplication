@@ -9,8 +9,8 @@ Grafo::Grafo()
     this->digrafo = 0;
     this->weigthNo = 0;
     this->weightArc = 0;
+    this->numAresta = 0;
 }
-
 
 Grafo::Grafo(bool isDigrafo)
 {
@@ -19,15 +19,26 @@ Grafo::Grafo(bool isDigrafo)
     this->digrafo = isDigrafo;
     this->weigthNo = 0;
     this->weightArc = 0;
+    this->numAresta = 0;
 }
 
-Grafo::Grafo(bool isDigrafo,bool weightArc)
+Grafo::Grafo(bool isDigrafo, bool weightArc)
 {
     this->ordem = 0;
     this->noRaiz = nullptr;
     this->digrafo = isDigrafo;
     this->weigthNo = 0;
-    this->weightArc = weightArc;
+    this->numAresta = 0;
+}
+
+Grafo::Grafo(int order, bool directed, bool weightedEdge, bool weightedNode)
+{
+    this->ordem = order;
+    this->noRaiz = nullptr;
+    this->digrafo = directed;
+    this->weigthNo = weightedNode;
+    this->weightArc = weightedEdge;
+    this->numAresta = 0;
 }
 
 Grafo::~Grafo()
@@ -164,7 +175,6 @@ bool Grafo::removeNo(int idNo, bool isDigrafo)
 
     return false;
 }
-
 
 //--- Funcoes de Aresta ---
 bool Grafo::insertAresta(int idNoOrigem, int idNoDestino, int pesoAresta, bool isDirected)
@@ -369,6 +379,16 @@ void Grafo::printGrafo()
     }
 }
 
-bool Grafo::isDigrafo(){
+bool Grafo::isDigrafo()
+{
     return this->digrafo;
+}
+
+bool Grafo::getWeightedEdge()
+{
+    return this->weightArc;
+}
+bool Grafo::getWeightedNode()
+{
+    return this->weigthNo;
 }
