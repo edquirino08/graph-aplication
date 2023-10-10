@@ -1,4 +1,9 @@
 #include "../include/Grafo.h"
+#include <vector>
+#include <map>
+#include <iostream>
+#include <fstream>
+#include <vector>
 
 using namespace std;
 
@@ -391,4 +396,55 @@ bool Grafo::getWeightedEdge()
 bool Grafo::getWeightedNode()
 {
     return this->weigthNo;
+}
+
+//------funções primeira etapa-----//
+
+void Grafo::imprimirFechoTransitivoDireto(ofstream &arquivoSaida, int idNo)
+{
+    vector<int> feixoTransitivo;
+    feixoTransitivo.push_back(idNo);
+    vector<bool> visitados(this->ordem, false);
+
+    No *node = getNoById(idNo);
+
+    if (node == nullptr)
+    {
+        cout << "Erro! No nao encontrado." << endl;
+        return;
+    }
+
+    Aresta *aresta = node->getPrimeiraAresta();
+    while (aresta != nullptr)
+    {
+        if (visitados[aresta->getIdNoDestino()] == false)
+        {
+            visitados[aresta->getIdNoDestino()] = true;
+            feixoTransitivo.push_back(aresta->getIdNoDestino());
+        }
+
+        aresta = aresta->getProxAresta();
+    }
+
+    gravarArquivoSaida(feixoTransitivo, arquivoSaida);
+}
+
+void Grafo::gravarArquivoSaida(vector<int> v, ofstream &arquivoSaida)
+{
+    if (!arquivoSaida.is_open())
+    {
+        std::cerr << "Erro ao abrir o arquivo de saída." << std::endl;
+        return;
+    }
+
+    for (size_t i = 0; i < v.size(); ++i)
+    {
+        arquivoSaida << v[i];
+        if (i < v.size() - 1)
+        {
+            arquivoSaida << ", ";
+        }
+    }
+
+    arquivoSaida.close();
 }

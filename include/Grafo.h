@@ -5,6 +5,7 @@
 #include <sstream>
 #include "Aresta.h"
 #include "No.h"
+#include <vector>
 
 using namespace std;
 
@@ -45,6 +46,12 @@ public:
     bool isDigrafo();
     bool getWeightedEdge();
     bool getWeightedNode();
+
+    void gravarArquivoSaida(vector<int> v, ofstream &arquivoSaida);
+
+    // --- Etapas trabalho ---
+
+    void imprimirFechoTransitivoDireto(ofstream &arquivoSaida, int idNo);
 
 private:
     int ordem;
