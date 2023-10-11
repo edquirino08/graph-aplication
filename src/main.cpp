@@ -150,7 +150,7 @@ void selecionar(int selecao, Grafo *graph, ofstream &output_file)
     int id;
     cout << "Digite o ID do vertice para seu fecho transitivo indireto: ";
     cin >> id;
-    // graph->imprimirFechoTransitivoIndireto(output_file, id);
+    graph->imprimirFechoTransitivoIndireto(output_file, id);
     break;
   }
 

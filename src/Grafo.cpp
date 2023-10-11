@@ -4,6 +4,9 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <stack>
+#include <queue>
+#include <algorithm>
 
 using namespace std;
 
@@ -436,15 +439,53 @@ void Grafo::gravarArquivoSaida(vector<int> v, ofstream &arquivoSaida)
         std::cerr << "Erro ao abrir o arquivo de saída." << std::endl;
         return;
     }
-
-    for (size_t i = 0; i < v.size(); ++i)
+    for (int i = 0; i < v.size(); i++)
     {
         arquivoSaida << v[i];
         if (i < v.size() - 1)
         {
-            arquivoSaida << ", ";
+            arquivoSaida << ",";
+        }
+    }
+    arquivoSaida << std::endl;
+
+    arquivoSaida.close();
+}
+
+void Grafo::imprimirFechoTransitivoIndireto(ofstream &arquivoSaida, int idNo)
+{
+    vector<int> fechoTransitivo;
+    vector<bool> visitados(this->ordem, false);
+
+    stack<int> pilha;
+    pilha.push(idNo);
+
+    while (!pilha.empty())
+    {
+        int currentNode = pilha.top();
+        pilha.pop();
+
+        if (!visitados[currentNode])
+        {
+            visitados[currentNode] = true;
+            fechoTransitivo.push_back(currentNode);
+        }
+
+        No *noOrigem = this->getNoRaiz();
+        while (noOrigem != nullptr)
+        {
+            Aresta *aresta = noOrigem->getPrimeiraAresta();
+            while (aresta != nullptr)
+            {
+                if (aresta->getIdNoDestino() == currentNode && !visitados[noOrigem->getIdNo()])
+                {
+                    pilha.push(noOrigem->getIdNo());
+                }
+                aresta = aresta->getProxAresta();
+            }
+            noOrigem = noOrigem->getProxNo();
         }
     }
 
-    arquivoSaida.close();
+    gravarArquivoSaida(fechoTransitivo, arquivoSaida);
 }

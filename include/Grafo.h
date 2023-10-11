@@ -52,6 +52,8 @@ public:
     // --- Etapas trabalho ---
 
     void imprimirFechoTransitivoDireto(ofstream &arquivoSaida, int idNo);
+    void imprimirFechoTransitivoIndireto(ofstream &arquivoSaida, int idNo);
+    // void getIncomingNodes(int idNo, vector<int> &feixoTransitivo, vector<bool> &visitados);
 
 private:
     int ordem;

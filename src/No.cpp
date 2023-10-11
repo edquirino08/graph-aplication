@@ -8,9 +8,9 @@ No::No(int idNo)
     this->pesoNo = 0;
     this->grauEntrada = 0;
     this->grauSaida = 0;
-    this->proxNo = NULL;
-    this->primeiraAresta = NULL;
-    this->ultimaAresta = NULL;
+    this->proxNo = nullptr;
+    this->primeiraAresta = nullptr;
+    this->ultimaAresta = nullptr;
 }
 No::No(int idNo, int weight)
 {
@@ -18,9 +18,9 @@ No::No(int idNo, int weight)
     this->pesoNo = weight;
     this->grauEntrada = 0;
     this->grauSaida = 0;
-    this->proxNo = NULL;
-    this->primeiraAresta = NULL;
-    this->ultimaAresta = NULL;
+    this->proxNo = nullptr;
+    this->primeiraAresta = nullptr;
+    this->ultimaAresta = nullptr;
 }
 No::~No()
 {
