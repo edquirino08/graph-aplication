@@ -5,6 +5,7 @@
 #include <sstream>
 #include "Aresta.h"
 #include "No.h"
+#include "vector"
 
 using namespace std;
 
@@ -42,6 +43,21 @@ public:
     int getGrauSaida();
     void printGrafo();
     bool isDigrafo();
+    bool getWeightedEdge();
+    bool getWeightedNode();
+
+    void gravarArquivoSaida(vector<int> v, ofstream &arquivoSaida);
+
+    // --- Etapas trabalho ---
+    void imprimirFechoTransitivoDireto(ofstream &arquivoSaida, int idNo);
+    void imprimirFechoTransitivoIndireto(ofstream &arquivoSaida, int idNo);
+
+    float dijkstra(int origem, int destino);
+    void minimalPathByFloyd(int id_one, int id_two);
+
+    void minimalSpanningTreeByPrimAlgorithm();
+
+    int minKey(const vector<int> &chave, const vector<bool> &inMST);
 
 private:
     int ordem;
