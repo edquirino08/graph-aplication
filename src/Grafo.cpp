@@ -575,33 +575,27 @@ void Grafo::minimalPathByFloyd(int id_one, int id_two)
 
 void Grafo::minimalSpanningTreeByPrimAlgorithm()
 {
-    // Verifique se o grafo é ponderado e não direcionado
     if (!weightArc || digrafo)
     {
         std::cerr << "O grafo deve ser ponderado e nao direcionado para usar o algoritmo de Prim." << std::endl;
         return;
     }
 
-    int V = ordem;                                              // Número de vértices no grafo
-    std::vector<Aresta *> mst;                                  // Árvore Geradora Mínima
-    std::vector<int> chave(V, std::numeric_limits<int>::max()); // Chaves de custo mínimo para cada vértice
-    std::vector<int> parent(V, -1);                             // Vértices pai na Árvore Geradora Mínima
-    std::vector<bool> inMST(V, false);                          // Vértices incluídos na Árvore Geradora Mínima
+    int V = ordem;
+    std::vector<Aresta *> mst;
+    std::vector<int> chave(V, std::numeric_limits<int>::max());
+    std::vector<int> parent(V, -1);
+    std::vector<bool> inMST(V, false);
 
-    // A raiz da Árvore Geradora Mínima pode ser escolhida arbitrariamente
     int raiz = 0;
     chave[raiz] = 0;
 
     for (int count = 1; count < V; count++)
     {
-        // Escolha o vértice com a chave mínima que ainda não está na Árvore Geradora Mínima
         int u = minKey(chave, inMST);
 
-        // Marque o vértice escolhido como incluído na Árvore Geradora Mínima
         inMST[u] = true;
 
-        // Para cada vértice adjacente a u, se a aresta tiver um peso menor do que a chave atual,
-        // atualize a chave do vértice
         for (Aresta *a = getNoById(u + 1)->getPrimeiraAresta(); a != nullptr; a = a->getProxAresta())
         {
             int v = a->getIdNoDestino();
@@ -615,34 +609,29 @@ void Grafo::minimalSpanningTreeByPrimAlgorithm()
     }
 
     for (int i = 1; i < V; i++)
-{
-    // Aqui, acessamos o nó de origem diretamente do vetor parent
-    int destino = i;
-    int peso = chave[i];
+    {
+        int destino = i;
+        int peso = chave[i];
 
-    // Adicione a aresta à Árvore Geradora Mínima
-    Aresta *aresta = new Aresta(destino, peso);  // Supondo que você tenha uma classe Aresta para representar arestas
-    mst.push_back(aresta);
-}
+        Aresta *aresta = new Aresta(destino, peso);
+        mst.push_back(aresta);
+    }
 
-    // Imprima a Árvore Geradora Mínima
     for (Aresta *aresta : mst)
     {
-        int origem = parent[aresta->getIdNoDestino()]; // Obtenha o nó de origem da aresta
+        int origem = parent[aresta->getIdNoDestino()];
         int destino = aresta->getIdNoDestino();
         int peso = aresta->getPesoAresta();
 
-        // Imprima as informações da aresta
         std::cout << "Aresta: " << origem << " - " << destino << " Peso: " << peso << std::endl;
     }
 
-    // Lembre-se de liberar a memória das Arestas que você criou
     for (Aresta *aresta : mst)
     {
         delete aresta;
     }
 }
-int Grafo::minKey(const std::vector<int> &chave, const std::vector<bool> &inMST)
+int Grafo::minKey(const vector<int> &chave, const vector<bool> &inMST)
 {
     int V = chave.size();
     int min = std::numeric_limits<int>::max();

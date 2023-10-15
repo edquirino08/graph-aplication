@@ -53,7 +53,13 @@ public:
 
     void imprimirFechoTransitivoDireto(ofstream &arquivoSaida, int idNo);
     void imprimirFechoTransitivoIndireto(ofstream &arquivoSaida, int idNo);
-    // void getIncomingNodes(int idNo, vector<int> &feixoTransitivo, vector<bool> &visitados);
+
+    float dijkstra(int origem, int destino);
+    void minimalPathByFloyd(int id_one, int id_two);
+
+    void minimalSpanningTreeByPrimAlgorithm();
+
+    int minKey(const vector<int> &chave, const vector<bool> &inMST);
 
 private:
     int ordem;
