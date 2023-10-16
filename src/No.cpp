@@ -54,7 +54,7 @@ No *No::getProxNo()
 
 Aresta *No::getPrimeiraAresta()
 {
-    return primeiraAresta;
+8    return primeiraAresta;
 }
 
 Aresta *No::getUltimaAresta()

@@ -2,9 +2,18 @@
 
 using namespace std;
 
+Aresta::Aresta()
+{
+    this->idNoDestino = 0;
+    this->pesoAresta = 0;
+    this->proxAresta = nullptr;
+}
+
 Aresta::Aresta(int noDestino)
 {
     this->idNoDestino = noDestino;
+    this->pesoAresta = 0;
+    this->proxAresta = nullptr;
 }
 
 Aresta::Aresta(int noDestino, int pesoAresta)
@@ -13,7 +22,6 @@ Aresta::Aresta(int noDestino, int pesoAresta)
     this->pesoAresta = pesoAresta;
     this->proxAresta = nullptr;
 }
-
 
 int Aresta::getPesoAresta()
 {

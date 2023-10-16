@@ -13,6 +13,7 @@ class No;
 class Aresta
 {
 public:
+    Aresta();
     Aresta(int noDestino);
     Aresta(int noDestino, int pesoAresta);
 

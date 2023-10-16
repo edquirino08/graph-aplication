@@ -37,6 +37,7 @@ Grafo::Grafo(bool isDigrafo, bool weightArc)
     this->ordem = 0;
     this->noRaiz = nullptr;
     this->digrafo = isDigrafo;
+    this->weightArc = weightArc;
     this->weigthNo = 0;
     this->numAresta = 0;
 }
@@ -565,7 +566,7 @@ void Grafo::minimalPathByFloyd(int id_one, int id_two)
 
     if (dist[node_id_one][node_id_two] != FLT_MAX)
     {
-        cout << "O caminho minimo entre os nas " << id_one << " e " << id_two << " é: " << dist[node_id_one][node_id_two] << endl;
+        cout << "O caminho minimo entre os nas " << id_one << " e " << id_two << " eh: " << dist[node_id_one][node_id_two] << endl;
     }
     else
     {
@@ -573,78 +574,108 @@ void Grafo::minimalPathByFloyd(int id_one, int id_two)
     }
 }
 
-void Grafo::minimalSpanningTreeByPrimAlgorithm()
+bool Grafo::existeAresta(int idNoOrigem, int idNoDestino)
 {
-    if (!weightArc || digrafo)
+    No *noOrigem = getNoById(idNoOrigem);
+    if (noOrigem)
     {
-        std::cerr << "O grafo deve ser ponderado e nao direcionado para usar o algoritmo de Prim." << std::endl;
-        return;
+        for (Aresta *a = noOrigem->getPrimeiraAresta(); a != nullptr; a = a->getProxAresta())
+        {
+            if (a->getIdNoDestino() == idNoDestino)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+Grafo *Grafo::getVerticeInduzido()
+{
+    Grafo *subgrafo = new Grafo(false, true);
+
+    for (int i = 1; i <= ordem; i++)
+    {
+        subgrafo->insereNo(i);
     }
 
-    int V = ordem;
-    std::vector<Aresta *> mst;
-    std::vector<int> chave(V, std::numeric_limits<int>::max());
-    std::vector<int> parent(V, -1);
-    std::vector<bool> inMST(V, false);
-
-    int raiz = 0;
-    chave[raiz] = 0;
-
-    for (int count = 1; count < V; count++)
+    for (int i = 1; i <= ordem; i++)
     {
-        int u = minKey(chave, inMST);
-
-        inMST[u] = true;
-
-        for (Aresta *a = getNoById(u + 1)->getPrimeiraAresta(); a != nullptr; a = a->getProxAresta())
+        for (Aresta *a = getNoById(i)->getPrimeiraAresta(); a != nullptr; a = a->getProxAresta())
         {
-            int v = a->getIdNoDestino();
-            int peso = a->getPesoAresta();
-            if (!inMST[v] && peso < chave[v])
+            int destino = a->getIdNoDestino();
+
+            if (subgrafo->existeAresta(i, destino))
             {
-                parent[v] = u + 1;
-                chave[v] = peso;
+                // Copie a aresta para o subgrafod
+                subgrafo->insertAresta(i, destino, a->getPesoAresta(), this->isDigrafo());
             }
         }
     }
 
-    for (int i = 1; i < V; i++)
-    {
-        int destino = i;
-        int peso = chave[i];
-
-        Aresta *aresta = new Aresta(destino, peso);
-        mst.push_back(aresta);
-    }
-
-    for (Aresta *aresta : mst)
-    {
-        int origem = parent[aresta->getIdNoDestino()];
-        int destino = aresta->getIdNoDestino();
-        int peso = aresta->getPesoAresta();
-
-        std::cout << "Aresta: " << origem << " - " << destino << " Peso: " << peso << std::endl;
-    }
-
-    for (Aresta *aresta : mst)
-    {
-        delete aresta;
-    }
+    return subgrafo;
 }
-int Grafo::minKey(const vector<int> &chave, const vector<bool> &inMST)
-{
-    int V = chave.size();
-    int min = std::numeric_limits<int>::max();
-    int min_index;
 
-    for (int v = 0; v < V; v++)
-    {
-        if (!inMST[v] && chave[v] < min)
-        {
-            min = chave[v];
-            min_index = v;
+void Grafo::minimalSpanningTreeByPrimAlgorithm(Grafo *g) {
+    // Verifica se o grafo é ponderado
+    if (!g->getWeightedEdge()) {
+        cout << "O algoritmo de Prim só pode ser aplicado a grafos ponderados." << endl;
+        return;
+    }
+
+    int ordem = g->getOrdem();
+
+    // Inicializa um vetor para rastrear os nós já incluídos na árvore geradora mínima
+    bool *inclusoNaAGM = new bool[ordem];
+
+    // Inicializa um vetor para armazenar o peso da aresta de menor custo para cada nó
+    float *custoMinimo = new float[ordem];
+
+    // Inicializa um vetor para armazenar o nó anterior na árvore geradora mínima
+    int *pai = new int[ordem];
+
+    for (int i = 0; i < ordem; i++) {
+        custoMinimo[i] = FLT_MAX; // Inicializa o custo mínimo como infinito
+        pai[i] = -1; // Inicializa o pai como indefinido
+        inclusoNaAGM[i] = false;
+    }
+
+    // Escolhe um nó inicial aleatório e define seu custo mínimo como 0
+    int noInicial = rand() % ordem;
+    custoMinimo[noInicial] = 0;
+
+    for (int i = 0; i < ordem - 1; i++) {
+        // Encontra o nó com o menor custo mínimo
+        int u = -1;
+        for (int j = 0; j < ordem; j++) {
+            if (!inclusoNaAGM[j] && (u == -1 || custoMinimo[j] < custoMinimo[u])) {
+                u = j;
+            }
+        }
+
+        inclusoNaAGM[u] = true;
+
+        // Atualiza os custos mínimos e pais dos vizinhos de u
+        for (int v = 0; v < ordem; v++) {
+            if (!inclusoNaAGM[v] && g->existeAresta(u, v)) {
+                float pesoAresta = g->getWeightedEdge();
+                if (pesoAresta < custoMinimo[v]) {
+                    custoMinimo[v] = pesoAresta;
+                    pai[v] = u;
+                }
+            }
         }
     }
 
-    return min_index;
+    // Imprime a árvore geradora mínima
+    for (int i = 0; i < ordem; i++) {
+        if (pai[i] != -1) {
+            cout << "Aresta: " << pai[i] << " - " << i << " | Peso: " << custoMinimo[i] << endl;
+        }
+    }
+
+    delete[] inclusoNaAGM;
+    delete[] custoMinimo;
+    delete[] pai;
 }
+

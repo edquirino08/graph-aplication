@@ -48,6 +48,7 @@ public:
     bool getWeightedNode();
 
     void gravarArquivoSaida(vector<int> v, ofstream &arquivoSaida);
+    bool existeAresta(int idNoOrigem, int idNoDestino);
 
     // --- Etapas trabalho ---
 
@@ -57,9 +58,9 @@ public:
     float dijkstra(int origem, int destino);
     void minimalPathByFloyd(int id_one, int id_two);
 
-    void minimalSpanningTreeByPrimAlgorithm();
-
-    int minKey(const vector<int> &chave, const vector<bool> &inMST);
+    void minimalSpanningTreeByPrimAlgorithm(Grafo *g);
+    void agmByKruskal();
+    Grafo *getVerticeInduzido();
 
 private:
     int ordem;

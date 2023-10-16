@@ -198,8 +198,8 @@ void selecionar(int selecao, Grafo *graph, ofstream &output_file)
     // Árvore Geradora Mínima - Prim;
   case 7:
   {
-    cout << "Árvore Geradora Mínima - Prim" << endl;
-    graph->minimalSpanningTreeByPrimAlgorithm();
+    cout << "Arvore Geradora Minima - Prim" << endl;
+    graph->minimalSpanningTreeByPrimAlgorithm(graph->getVerticeInduzido());
     break;
   }
     // Árvore Geradora Mínima - Kruskal;
@@ -213,7 +213,7 @@ void selecionar(int selecao, Grafo *graph, ofstream &output_file)
   {
     // output_file.close();
     int id;
-    cout << "Digite o vértice de inicio: ";
+    cout << "Digite o vertice de inicio: ";
     cin >> id;
     // graph->depthFirstSearch(output_file, id);
   }
