@@ -449,7 +449,7 @@ void Grafo::gravarArquivoSaida(vector<int> v, ofstream &arquivoSaida)
     }
     arquivoSaida << std::endl;
 
-    arquivoSaida.close();
+//    arquivoSaida.close();
 }
 
 void Grafo::imprimirFechoTransitivoIndireto(ofstream &arquivoSaida, int idNo)

@@ -1,6 +1,7 @@
 #include <iostream>
 #include "../include/Grafo.h"
 
+
 #include <string>
 #include <sstream>
 #include <math.h>
@@ -219,6 +220,7 @@ void selecionar(int selecao, Grafo *graph, ofstream &output_file)
   }
   default:
   {
+    output_file.close();
     cout << "Exit!!!" << endl;
   }
   }
