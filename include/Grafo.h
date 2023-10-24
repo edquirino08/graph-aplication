@@ -59,7 +59,7 @@ public:
     void minimalPathByFloyd(int id_one, int id_two);
 
     void minimalSpanningTreeByPrimAlgorithm(Grafo *g);
-    void agmByKruskal();
+    void agmByKruskal(Grafo *grafo);
     Grafo *getVerticeInduzido();
 
 private:

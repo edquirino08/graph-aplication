@@ -699,3 +699,68 @@ void Grafo::minimalSpanningTreeByPrimAlgorithm(Grafo *g)
     delete[] custoMinimo;
     delete[] pai;
 }
+
+void Grafo::agmByKruskal(Grafo *grafo)
+{
+    int numVertices = grafo->getOrdem();
+    vector<int> subarvores(numVertices + 1, -1);
+
+    vector<pair<int, int>> listaArestas;
+    for (int i = 1; i <= numVertices; i++)
+    {
+        No *no = grafo->getNoById(i);
+        Aresta *aresta = no->getPrimeiraAresta();
+        int indiceAresta = 1;
+        while (aresta != nullptr)
+        {
+            listaArestas.push_back(make_pair(indiceAresta, aresta->getPesoAresta()));
+            aresta = aresta->getProxAresta();
+            indiceAresta++;
+        }
+    }
+
+    auto compareArestas = [](const pair<int, int> &a, const pair<int, int> &b)
+    {
+        return a.second < b.second;
+    };
+
+    sort(listaArestas.begin(), listaArestas.end(), compareArestas);
+
+    int contador = 0;
+
+    for (const auto &aresta : listaArestas)
+    {
+        int indiceAresta = aresta.first;
+        int pesoAresta = aresta.second;
+
+        Aresta *arestaAtual = grafo->getNoById(indiceAresta)->getPrimeiraAresta();
+        int u = grafo->getNoById(indiceAresta)->getIdNo();
+        int v = arestaAtual->getIdNoDestino();
+
+        int raizU = u;
+        int raizV = v;
+
+        while (subarvores[raizU] != -1)
+        {
+            raizU = subarvores[raizU];
+        }
+
+        while (subarvores[raizV] != -1)
+        {
+            raizV = subarvores[raizV];
+        }
+
+        if (raizU != raizV)
+        {
+            cout << "Aresta: " << u << " - " << v << " Peso: " << pesoAresta << endl;
+            contador++;
+
+            subarvores[raizU] = raizV;
+        }
+
+        if (contador >= numVertices - 1)
+        {
+            break;
+        }
+    }
+}

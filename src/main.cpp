@@ -203,7 +203,7 @@ void selecionar(int selecao, Grafo *graph, ofstream &output_file)
     // Árvore Geradora Mínima - Kruskal;
   case 8:
   {
-    // graph->agmByKruskal(output_file, graph->getVerticeInduzido());
+    graph->agmByKruskal(graph->getVerticeInduzido());
     break;
   }
     // Caminhamento em profundidade
