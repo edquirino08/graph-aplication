@@ -213,7 +213,7 @@ void selecionar(int selecao, Grafo *graph, ofstream &output_file)
     int id;
     cout << "Digite o vertice de inicio: ";
     cin >> id;
-    // graph->depthFirstSearch(output_file, id);
+    graph->depthFirstSearch(output_file, id);
   }
   default:
   {

@@ -764,3 +764,55 @@ void Grafo::agmByKruskal(Grafo *grafo)
         }
     }
 }
+
+void Grafo::depthFirstSearch(ofstream &outputFile, int id)
+{
+    // Verifica se o nó com o ID especificado existe no grafo
+    if (!procurarNoPeloId(id))
+    {
+        cout << "No com ID " << id << " nao encontrado no grafo." << endl;
+        return;
+    }
+
+    // Vetor para controlar os nós visitados
+    vector<bool> visitado(getOrdem() + 1, false);
+
+    stack<int> pilha;
+
+    // Empilha o nó inicial
+    pilha.push(id);
+
+    while (!pilha.empty())
+    {
+        int n = pilha.top();
+        pilha.pop();
+
+        // Marca o nó como visitado
+        visitado[n] = true;
+
+        No *no = getNoById(n);
+
+        // Processa o nó
+        cout << "Visitando no " << n << endl;
+
+        Aresta *aresta = no->getPrimeiraAresta();
+        while (aresta != nullptr)
+        {
+            int destino = aresta->getIdNoDestino();
+
+            if (!visitado[destino])
+            {
+                // Aresta de avanço
+                cout << "Aresta de avanco: " << n << " -> " << destino << endl;
+                pilha.push(destino);
+            }
+            else if (destino != no->getIdNo() && visitado[destino])
+            {
+                // Aresta de retorno
+                cout << "Aresta de retorno: " << n << " -> " << destino << endl;
+            }
+
+            aresta = aresta->getProxAresta();
+        }
+    }
+}

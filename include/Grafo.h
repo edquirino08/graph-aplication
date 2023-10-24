@@ -62,6 +62,8 @@ public:
     void agmByKruskal(Grafo *grafo);
     Grafo *getVerticeInduzido();
 
+    void depthFirstSearch(ofstream &outputFile, int id);
+
 private:
     int ordem;
     int numAresta;
