@@ -585,7 +585,7 @@ void Grafo::minimalPathByFloyd(int id_one, int id_two)
 
     if (dist[node_id_one][node_id_two] != FLT_MAX)
     {
-        cout << "O caminho minimo entre os nas " << id_one << " e " << id_two << " eh: " << dist[node_id_one][node_id_two] << endl;
+        cout << "O caminho minimo entre os nos " << id_one << " e " << id_two << " eh: " << dist[node_id_one][node_id_two] << endl;
     }
     else
     {
@@ -624,9 +624,8 @@ Grafo *Grafo::getVerticeInduzido()
         {
             int destino = a->getIdNoDestino();
 
-            if (subgrafo->existeAresta(i, destino))
+            if (!subgrafo->existeAresta(i, destino))
             {
-                // Copie a aresta para o subgrafod
                 subgrafo->insertAresta(i, destino, a->getPesoAresta(), this->isDigrafo());
             }
         }
@@ -637,7 +636,6 @@ Grafo *Grafo::getVerticeInduzido()
 
 void Grafo::minimalSpanningTreeByPrimAlgorithm(Grafo *g)
 {
-    // Verifica se o grafo é ponderado
     if (!g->getWeightedEdge())
     {
         cout << "O algoritmo de Prim só pode ser aplicado a grafos ponderados." << endl;
@@ -646,29 +644,24 @@ void Grafo::minimalSpanningTreeByPrimAlgorithm(Grafo *g)
 
     int ordem = g->getOrdem();
 
-    // Inicializa um vetor para rastrear os nós já incluídos na árvore geradora mínima
     bool *inclusoNaAGM = new bool[ordem];
 
-    // Inicializa um vetor para armazenar o peso da aresta de menor custo para cada nó
     float *custoMinimo = new float[ordem];
 
-    // Inicializa um vetor para armazenar o nó anterior na árvore geradora mínima
     int *pai = new int[ordem];
 
     for (int i = 0; i < ordem; i++)
     {
-        custoMinimo[i] = FLT_MAX; // Inicializa o custo mínimo como infinito
-        pai[i] = -1;              // Inicializa o pai como indefinido
+        custoMinimo[i] = FLT_MAX;
+        pai[i] = -1;
         inclusoNaAGM[i] = false;
     }
 
-    // Escolhe um nó inicial aleatório e define seu custo mínimo como 0
     int noInicial = rand() % ordem;
     custoMinimo[noInicial] = 0;
 
     for (int i = 0; i < ordem - 1; i++)
     {
-        // Encontra o nó com o menor custo mínimo
         int u = -1;
         for (int j = 0; j < ordem; j++)
         {
@@ -680,7 +673,6 @@ void Grafo::minimalSpanningTreeByPrimAlgorithm(Grafo *g)
 
         inclusoNaAGM[u] = true;
 
-        // Atualiza os custos mínimos e pais dos vizinhos de u
         for (int v = 0; v < ordem; v++)
         {
             if (!inclusoNaAGM[v] && g->existeAresta(u, v))
@@ -695,7 +687,6 @@ void Grafo::minimalSpanningTreeByPrimAlgorithm(Grafo *g)
         }
     }
 
-    // Imprime a árvore geradora mínima
     for (int i = 0; i < ordem; i++)
     {
         if (pai[i] != -1)
