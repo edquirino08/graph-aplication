@@ -55,7 +55,7 @@ public:
     void imprimirFechoTransitivoDireto(ofstream &arquivoSaida, int idNo);
     void imprimirFechoTransitivoIndireto(ofstream &arquivoSaida, int idNo);
 
-    float dijkstra(int origem, int destino);
+    void dijkstra(int origem, int destino);
     void minimalPathByFloyd(int id_one, int id_two);
 
     void minimalSpanningTreeByPrimAlgorithm(Grafo *g);

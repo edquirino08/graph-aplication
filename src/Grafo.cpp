@@ -497,39 +497,54 @@ void Grafo::imprimirFechoTransitivoIndireto(ofstream &arquivoSaida, int idNo)
     gravarArquivoSaida(fechoTransitivo, arquivoSaida);
 }
 
-float Grafo::dijkstra(int origem, int destino)
+void Grafo::dijkstra(int origem, int destino)
 {
-    std::vector<float> dist(ordem, std::numeric_limits<float>::max());
-    std::set<std::pair<float, int>> filaPrioridade;
-
-    dist[origem] = 0.0f;
-    filaPrioridade.insert({0.0f, origem});
-
-    while (!filaPrioridade.empty())
+    if (!this->getWeightedEdge())
     {
-        int u = filaPrioridade.begin()->second;
-        filaPrioridade.erase(filaPrioridade.begin());
+        cerr << "O algoritmo de Dijkstra requer um grafo com arestas ponderadas." << endl;
+        return;
+    }
 
-        for (Aresta *aresta = getNoById(u)->getPrimeiraAresta(); aresta != nullptr; aresta = aresta->getProxAresta())
+    vector<float> dist(this->getOrdem(), numeric_limits<float>::max());
+    vector<int> pai(this->getOrdem(), -1);
+    vector<bool> visitado(this->getOrdem(), false);
+
+    dist[origem - 1] = 0;
+
+    for (int count = 0; count < this->getOrdem() - 1; count++)
+    {
+        int u = -1;
+
+        for (int i = 0; i < this->getOrdem(); i++)
         {
-            int v = aresta->getIdNoDestino();
-            float pesoAresta = static_cast<float>(aresta->getPesoAresta());
-            if (dist[u] + pesoAresta < dist[v])
+            if (!visitado[i] && (u == -1 || dist[i] < dist[u]))
             {
-                filaPrioridade.erase({dist[v], v});
-                dist[v] = dist[u] + pesoAresta;
-                filaPrioridade.insert({dist[v], v});
+                u = i;
+            }
+        }
+
+        if (u == -1 || dist[u] == numeric_limits<float>::max())
+        {
+            cerr << "Grafo desconexo ou inalcancavel a partir da origem." << endl;
+            return;
+        }
+
+        visitado[u] = true;
+
+        for (Aresta *aresta = this->getNoById(u + 1)->getPrimeiraAresta(); aresta; aresta = aresta->getProxAresta())
+        {
+            int v = aresta->getIdNoDestino() - 1;
+            float peso = aresta->getPesoAresta();
+
+            if (!visitado[v] && dist[u] + peso < dist[v])
+            {
+                dist[v] = dist[u] + peso;
+                pai[v] = u;
             }
         }
     }
 
-    if (dist[destino] == std::numeric_limits<float>::max())
-    {
-        std::cout << "Nao ha caminho entre os nos " << origem << " e " << destino << std::endl;
-        return 0.0f;
-    }
-
-    return dist[destino];
+    cout << "Caminho mais curto de " << origem << " para " << destino << ": " << dist[destino - 1] << endl;
 }
 
 void Grafo::minimalPathByFloyd(int id_one, int id_two)

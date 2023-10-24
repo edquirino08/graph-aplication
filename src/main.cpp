@@ -175,13 +175,11 @@ void selecionar(int selecao, Grafo *graph, ofstream &output_file)
   case 5:
   {
     int id1, id2;
-    cout << "Digite o vértcie de inicio: ";
+    cout << "Digite o vertcie de inicio: ";
     cin >> id1;
-    cout << "Digite o vértcie final: ";
+    cout << "Digite o vertcie final: ";
     cin >> id2;
-    float distancia = graph->dijkstra(id1, id2);
-    cout << "A distancia entre " << id1 << " e " << id2 << " é de: "
-         << "distancia" << endl;
+    graph->dijkstra(id1, id2);
     break;
   }
 
