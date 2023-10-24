@@ -32,12 +32,12 @@ Grafo::Grafo(bool isDigrafo)
     this->numAresta = 0;
 }
 
-Grafo::Grafo(bool isDigrafo, bool weightArc)
+Grafo::Grafo(bool isDigrafo, bool weightArco)
 {
     this->ordem = 0;
     this->noRaiz = nullptr;
     this->digrafo = isDigrafo;
-    this->weightArc = weightArc;
+    this->weightArc = weightArco;
     this->weigthNo = 0;
     this->numAresta = 0;
 }
@@ -411,7 +411,8 @@ void Grafo::gravarArquivoSaida(vector<int> v, ofstream &arquivoSaida)
         std::cerr << "Erro ao abrir o arquivo de saída." << std::endl;
         return;
     }
-    for (int i = 0; i < v.size(); i++)
+
+    for (std::vector<int>::size_type i = 0; i < v.size(); i++)
     {
         arquivoSaida << v[i];
         if (i < v.size() - 1)
@@ -419,17 +420,17 @@ void Grafo::gravarArquivoSaida(vector<int> v, ofstream &arquivoSaida)
             arquivoSaida << ",";
         }
     }
-    arquivoSaida << std::endl;
 
-    arquivoSaida.close();
+    arquivoSaida << std::endl;
 }
 
 //------funções primeira etapa-----//
-
 void Grafo::imprimirFechoTransitivoDireto(ofstream &arquivoSaida, int idNo)
 {
     vector<int> feixoTransitivo;
     feixoTransitivo.push_back(idNo);
+
+    // Certifique-se de que visitados seja acessível
     vector<bool> visitados(this->ordem, false);
 
     No *node = getNoById(idNo);
@@ -441,11 +442,14 @@ void Grafo::imprimirFechoTransitivoDireto(ofstream &arquivoSaida, int idNo)
     }
 
     Aresta *aresta = node->getPrimeiraAresta();
+    int visitadosCount = 0;
+
     while (aresta != nullptr)
     {
-        if (visitados[aresta->getIdNoDestino()] == false)
+        if (visitadosCount < this->ordem && !visitados[aresta->getIdNoDestino()])
         {
             visitados[aresta->getIdNoDestino()] = true;
+            visitadosCount++;
             feixoTransitivo.push_back(aresta->getIdNoDestino());
         }
 
@@ -616,9 +620,11 @@ Grafo *Grafo::getVerticeInduzido()
     return subgrafo;
 }
 
-void Grafo::minimalSpanningTreeByPrimAlgorithm(Grafo *g) {
+void Grafo::minimalSpanningTreeByPrimAlgorithm(Grafo *g)
+{
     // Verifica se o grafo é ponderado
-    if (!g->getWeightedEdge()) {
+    if (!g->getWeightedEdge())
+    {
         cout << "O algoritmo de Prim só pode ser aplicado a grafos ponderados." << endl;
         return;
     }
@@ -634,9 +640,10 @@ void Grafo::minimalSpanningTreeByPrimAlgorithm(Grafo *g) {
     // Inicializa um vetor para armazenar o nó anterior na árvore geradora mínima
     int *pai = new int[ordem];
 
-    for (int i = 0; i < ordem; i++) {
+    for (int i = 0; i < ordem; i++)
+    {
         custoMinimo[i] = FLT_MAX; // Inicializa o custo mínimo como infinito
-        pai[i] = -1; // Inicializa o pai como indefinido
+        pai[i] = -1;              // Inicializa o pai como indefinido
         inclusoNaAGM[i] = false;
     }
 
@@ -644,11 +651,14 @@ void Grafo::minimalSpanningTreeByPrimAlgorithm(Grafo *g) {
     int noInicial = rand() % ordem;
     custoMinimo[noInicial] = 0;
 
-    for (int i = 0; i < ordem - 1; i++) {
+    for (int i = 0; i < ordem - 1; i++)
+    {
         // Encontra o nó com o menor custo mínimo
         int u = -1;
-        for (int j = 0; j < ordem; j++) {
-            if (!inclusoNaAGM[j] && (u == -1 || custoMinimo[j] < custoMinimo[u])) {
+        for (int j = 0; j < ordem; j++)
+        {
+            if (!inclusoNaAGM[j] && (u == -1 || custoMinimo[j] < custoMinimo[u]))
+            {
                 u = j;
             }
         }
@@ -656,10 +666,13 @@ void Grafo::minimalSpanningTreeByPrimAlgorithm(Grafo *g) {
         inclusoNaAGM[u] = true;
 
         // Atualiza os custos mínimos e pais dos vizinhos de u
-        for (int v = 0; v < ordem; v++) {
-            if (!inclusoNaAGM[v] && g->existeAresta(u, v)) {
+        for (int v = 0; v < ordem; v++)
+        {
+            if (!inclusoNaAGM[v] && g->existeAresta(u, v))
+            {
                 float pesoAresta = g->getWeightedEdge();
-                if (pesoAresta < custoMinimo[v]) {
+                if (pesoAresta < custoMinimo[v])
+                {
                     custoMinimo[v] = pesoAresta;
                     pai[v] = u;
                 }
@@ -668,8 +681,10 @@ void Grafo::minimalSpanningTreeByPrimAlgorithm(Grafo *g) {
     }
 
     // Imprime a árvore geradora mínima
-    for (int i = 0; i < ordem; i++) {
-        if (pai[i] != -1) {
+    for (int i = 0; i < ordem; i++)
+    {
+        if (pai[i] != -1)
+        {
             cout << "Aresta: " << pai[i] << " - " << i << " | Peso: " << custoMinimo[i] << endl;
         }
     }
@@ -678,4 +693,3 @@ void Grafo::minimalSpanningTreeByPrimAlgorithm(Grafo *g) {
     delete[] custoMinimo;
     delete[] pai;
 }
-
