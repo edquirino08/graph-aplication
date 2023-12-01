@@ -816,3 +816,108 @@ void Grafo::depthFirstSearch(ofstream &outputFile, int id)
         }
     }
 }
+
+void Grafo::calculaMedidasDoGrafo(Grafo *g)
+{
+    // Verifica se o grafo é ponderado nas arestas
+    if (!g->getWeightedEdge())
+    {
+        cout << "O grafo não é ponderado nas arestas." << endl;
+        return;
+    }
+
+    int ordem = g->getOrdem();
+    int raio = INT_MAX;
+    int diametro = 0;
+    vector<int> centro;
+    vector<int> periferia;
+
+    // Primeiro, calculamos o raio, o diâmetro, o centro e a periferia do grafo
+    for (int idNo = 1; idNo <= ordem; idNo++) {
+        vector<int> distancia(ordem, INT_MAX);
+        No *origem = g->getNoById(idNo);
+        distancia[origem->getIdNo() - 1] = 0;
+
+        queue<No *> fila; // Fila para a busca em largura
+        fila.push(origem);
+
+        while (!fila.empty()) {
+            No *no = fila.front();
+            fila.pop();
+            Aresta *aresta = no->getPrimeiraAresta();
+
+            while (aresta != nullptr) {
+                No *vizinho = g->getNoById(aresta->getIdNoDestino());
+
+                if (distancia[vizinho->getIdNo() - 1] == INT_MAX) {
+                    distancia[vizinho->getIdNo() - 1] = distancia[no->getIdNo() - 1] + 1;
+                    fila.push(vizinho);
+                }
+                aresta = aresta->getProxAresta();
+            }
+        }
+
+        // Atualizamos o raio e o diâmetro com base nas distâncias encontradas
+        for (int d : distancia) {
+            if (d != INT_MAX) {
+                raio = min(raio, d);
+                diametro = max(diametro, d);
+            }
+        }
+    }
+
+    // Agora, calculamos os nós do centro e da periferia com base no raio
+    for (int idNo = 1; idNo <= ordem; idNo++) {
+        vector<int> distancia(ordem, INT_MAX);
+        No *origem = g->getNoById(idNo);
+        distancia[origem->getIdNo() - 1] = 0;
+
+        queue<No *> fila;
+        fila.push(origem);
+
+        while (!fila.empty()) {
+            No *no = fila.front();
+            fila.pop();
+            Aresta *aresta = no->getPrimeiraAresta();
+
+            while (aresta != nullptr) {
+                No *vizinho = g->getNoById(aresta->getIdNoDestino());
+
+                if (distancia[vizinho->getIdNo() - 1] == INT_MAX) {
+                    distancia[vizinho->getIdNo() - 1] = distancia[no->getIdNo() - 1] + 1;
+                    fila.push(vizinho);
+                }
+                aresta = aresta->getProxAresta();
+            }
+        }
+
+        int maxDistancia = 0;
+        for (int d : distancia) {
+            if (d != INT_MAX) {
+                maxDistancia = max(maxDistancia, d);
+            }
+        }
+
+        // Adicionamos o nó ao centro se a distância máxima for igual ao raio
+        // Adicionamos o nó à periferia se a distância máxima for igual ao diâmetro
+        if (maxDistancia == raio) {
+            centro.push_back(origem->getIdNo());
+        } else if (maxDistancia == diametro) {
+            periferia.push_back(origem->getIdNo());
+        }
+    }
+
+    // Imprimimos as medidas calculadas
+    cout << "Raio: " << raio << endl;
+    cout << "Diâmetro: " << diametro << endl;
+    cout << "Centro: ";
+    for (int c : centro) {
+        cout << c << " ";
+    }
+    cout << endl;
+    cout << "Periferia: ";
+    for (int p : periferia) {
+        cout << p << " ";
+    }
+    cout << endl;
+}
